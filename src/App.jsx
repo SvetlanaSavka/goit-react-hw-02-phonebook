@@ -1,60 +1,87 @@
+import { nanoid } from 'nanoid';
 import React from 'react';
-import FeedbackOptions from 'components/FeedbackOptions/FeedbackOptions';
-import Statistics from 'components/Statistics/Statistics';
-import Section from 'components/Section/Section';
-import Notiflix from 'components/Notiflix/Notiflix';
+
+import ContactForm from 'components/ContactForm/ContactForm';
+import ContactList from 'components/ContactList/ContactList';
+import Filter from 'components/Filter/Filter';
 
 export class App extends React.Component {
   state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+    filter: '',
+    name: '',
+    number: '',
   };
 
-  handleMethod = method => {
+  addContacts = data => {
+    const isAdded = this.validationData(data);
+    if (isAdded) {
+      alert(`${data.name} уже добавлен`);
+      return;
+    }
+    const contact = {
+      id: nanoid(),
+      name: data.name,
+      number: data.number,
+    };
     this.setState(prevState => ({
-      [method]: prevState[method] + 1,
+      contacts: [contact, ...prevState.contacts],
     }));
   };
 
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
-    const result = good + neutral + bad;
-    return result;
+  formSubmitHandler = data => {
+    // поднятие состояния
+    console.log(data);
   };
-  countPositiveFeedbackPercentage = () => {
-    const { good } = this.state;
-    const result = this.countTotalFeedback();
-    const percentage = (100 * good) / result;
-    return Math.round(percentage);
+
+  changeFilter = event => {
+    this.setState({
+      filter: event.currentTarget.value, //обновляем фильтр
+    });
+  };
+
+  getVisibleContacts = () => {
+    const { filter, contacts } = this.state;
+
+    const normalizedFilter = filter.toLowerCase();
+
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+  };
+
+  validationData = data =>
+    this.state.contacts.find(contact => contact.name === data.name);
+
+  deleteContact = id => {
+    // array.filter(el => el.name !== name)
+    const filteredArray = this.state.contacts.filter(el => el.id !== id);
+    this.setState({ contacts: filteredArray });
   };
 
   render() {
-    console.log(Object.keys(this.state));
-    const total = this.countTotalFeedback();
+    const visibleContacts = this.getVisibleContacts();
+
     return (
       <>
-        <Section title="Please leave feedback">
-          <FeedbackOptions
-            options={Object.keys(this.state)}
-            onLeaveFeedback={this.handleMethod}
-          />
-        </Section>
-        {total === 0 ? (
-          <Notiflix message="There is no feedback" />
-        ) : (
-          <Section title="Statistics">
-            <Statistics
-              good={this.state.good}
-              neutral={this.state.neutral}
-              bad={this.state.bad}
-              total={this.countTotalFeedback}
-              Positive
-              feedback={this.countPositiveFeedbackPercentage}
-            />
-          </Section>
-        )}
+        <h1>Phonebook</h1>
+        <ContactForm onSubmit={this.addContacts} />
+        <h2>Contacts</h2>
+        <Filter value={this.state.filter} onChange={this.changeFilter} />
+        <ContactList
+          contacts={visibleContacts}
+          onRemoveContact={this.deleteContact}
+        />
+
+        {/* <ContactList ... />  */}
       </>
     );
   }
 }
+// value={filter}= значение из State
+//visibleContacts  куда передать?
