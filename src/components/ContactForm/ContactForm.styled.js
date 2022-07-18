@@ -2,18 +2,10 @@ import styled from 'styled-components';
 import { Form, Field /* ErrorMessage */ } from 'formik';
 
 export const Formcontact = styled(Form)`
-  /*  width: 100%;
-  height: 45px;
-  margin-bottom: 10px;
-  border: 1px solid lightgray;
-  outline: none;
-  padding-left: 10px;
-  color: teal; */
-
   display: flex;
   flex-direction: column;
   padding: 12px;
-  width: 100%;
+  width: 470px;
   border-radius: 2px;
   margin-bottom: 6px;
 `;
@@ -48,5 +40,4 @@ export const ContactFormField = styled(Field)`
   border-width: 2px;
   border-radius: 4px;
   height: 26px;
-  //width: 50px;
 `;
