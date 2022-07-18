@@ -10,8 +10,6 @@ export const Button = styled.button`
   background-color: lightblue;
   :hover {
     background-color: lightgrey;
-    margin-right: 15px;
-    padding-top: 10px;
   }
 `;
 
